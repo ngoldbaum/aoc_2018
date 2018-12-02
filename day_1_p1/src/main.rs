@@ -16,7 +16,6 @@ fn get_frequency(filename: &str) -> i64 {
     let mut contents = String::new();
     f.read_to_string(&mut contents)
         .expect("something went wrong reading the file");
-    
 
     let lines = contents.lines();
 
@@ -32,7 +31,7 @@ fn get_frequency(filename: &str) -> i64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn examples() {
         assert!(get_frequency("test1") == 3);

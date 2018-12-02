@@ -1,7 +1,7 @@
+use std::collections::HashSet;
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
-use std::collections::HashSet;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -17,7 +17,7 @@ fn get_double(filename: &str) -> i64 {
     let mut contents = String::new();
     f.read_to_string(&mut contents)
         .expect("something went wrong reading the file");
-    
+
     let lines = contents.lines();
 
     let mut frequency: i64 = 0;
@@ -37,7 +37,7 @@ fn get_double(filename: &str) -> i64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
     fn examples() {
         assert!(get_double("test1") == 0);
