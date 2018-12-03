@@ -1,0 +1,8 @@
+[package]
+name = "day_3"
+version = "0.1.0"
+authors = ["Nathan Goldbaum <ngoldbau@illinois.edu>"]
+
+[dependencies]
+ndarray = "0.12.1"
+itertools = "0.7.11"
