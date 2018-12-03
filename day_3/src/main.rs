@@ -18,7 +18,7 @@ struct Point {
 struct Rectangle {
     corner: Point,
     width: u64,
-    height: u64
+    height: u64,
 }
 
 fn main() {
@@ -28,7 +28,7 @@ fn main() {
 
     let rectangles = get_rectangles(filename);
     let arena = get_arena(&rectangles);
-    
+
     println!("{}", intersect(arena.clone()));
     println!("{}", no_intersect(arena.clone(), &rectangles));
 }
@@ -48,7 +48,7 @@ fn get_rectangles(filename: &str) -> Vec<Rectangle> {
     let lines: Vec<&str> = contents.split('\n').collect();
 
     let mut rectangles: Vec<Rectangle> = Vec::new();
-    
+
     for line in lines {
         let spl: Vec<&str> = line.split("@").collect();
         let pwh: Vec<&str> = spl[1].trim().split(':').collect();
@@ -64,7 +64,7 @@ fn get_rectangles(filename: &str) -> Vec<Rectangle> {
             corner: point,
             width: wh[0].parse::<u64>().unwrap(),
             height: wh[1].parse::<u64>().unwrap(),
-        };    
+        };
         rectangles.push(r);
     }
     rectangles
@@ -115,7 +115,7 @@ fn intersect(arena: Array<u64, Ix2>) -> u64 {
             count += 1;
         }
     }
-    
+
     count
 }
 
