@@ -46,7 +46,8 @@ fn react(mut result: String) -> String {
     result = result.trim_end().to_string();
 
     loop {
-        let mut i = 0;
+        let mut new_result: String = String::new();
+        let mylen = result.len();
         {
             let mut iter = result.chars().peekable();
             while let Some(c1) = iter.next() {
@@ -63,17 +64,16 @@ fn react(mut result: String) -> String {
                     None => (),
                 }
                 if skip {
-                    break;
+                    iter.next();
                 } else {
-                    i += 1;
+                    new_result.push(c1);
                 }
             }
         }
-        if i == result.len() {
+        if mylen == new_result.len() {
             break;
         }
-        result.remove(i);
-        result.remove(i);
+        result = new_result;
     }
     result
 }
