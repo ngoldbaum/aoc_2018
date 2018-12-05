@@ -13,8 +13,6 @@ fn main() {
 
     let contents = get_contents(filename);
 
-    println!("{}", rayon::current_num_threads());
-
     let reacted_contents = react(contents);
 
     println!("{}", reacted_contents.len());
