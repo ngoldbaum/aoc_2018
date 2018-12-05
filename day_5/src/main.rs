@@ -52,8 +52,10 @@ fn react(mut result: String) -> String {
                 let mut skip = false;
                 match iter.peek() {
                     Some(c2) => {
-                        if c1.eq_ignore_ascii_case(c2) && ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase())
-                                || (c1.is_ascii_lowercase() && c2.is_ascii_uppercase())) {
+                        if c1.eq_ignore_ascii_case(c2)
+                            && ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase())
+                                || (c1.is_ascii_lowercase() && c2.is_ascii_uppercase()))
+                        {
                             skip = true;
                         }
                     }
