@@ -13,8 +13,12 @@ fn main() {
 
     let contents = get_contents(filename);
 
-    println!("{}", react(contents.clone()).len());
-    println!("{}", best_react(react(contents)));
+    println!("{}", rayon::current_num_threads());
+
+    let reacted_contents = react(contents);
+    
+    println!("{}", reacted_contents.len());
+    println!("{}", best_react(reacted_contents));
 }
 
 fn get_contents(filename: &str) -> String {
@@ -32,7 +36,7 @@ fn best_react(contents: String) -> usize {
         let this_contents = contents.replace(test, "");
         let this_contents = this_contents
             .replace(test.to_ascii_lowercase(), "");
-
+        println!("{:#?}", std::thread::current().id());
         react(this_contents).len()
     } ).min().unwrap()
 }
