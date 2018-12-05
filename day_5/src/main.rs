@@ -44,7 +44,7 @@ fn react(mut result: String) -> String {
     result = result.trim_end().to_string();
 
     loop {
-        let mut new_result: String = String::new();
+        let mut new_result: String = String::with_capacity(result.len());
         let mylen = result.len();
         {
             let mut iter = result.chars().peekable();
@@ -52,10 +52,8 @@ fn react(mut result: String) -> String {
                 let mut skip = false;
                 match iter.peek() {
                     Some(c2) => {
-                        if (c1.to_ascii_lowercase() == c2.to_ascii_lowercase())
-                            && ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase())
-                                || (c1.is_ascii_lowercase() && c2.is_ascii_uppercase()))
-                        {
+                        if c1.eq_ignore_ascii_case(c2) && ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase())
+                                || (c1.is_ascii_lowercase() && c2.is_ascii_uppercase())) {
                             skip = true;
                         }
                     }
