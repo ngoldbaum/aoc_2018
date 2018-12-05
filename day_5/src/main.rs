@@ -8,9 +8,9 @@ fn main() {
     let filename = &args[1];
 
     let contents = get_contents(filename);
-    
-    println!("{}", react(contents.clone()));
-    println!("{}", best_react(contents.clone()));
+
+    println!("{}", react(contents.clone()).len());
+    println!("{}", best_react(react(contents)));
 }
 
 fn get_contents(filename: &str) -> String {
@@ -25,13 +25,13 @@ fn get_contents(filename: &str) -> String {
 
 fn best_react(contents: String) -> usize {
     let mut best_len = contents.len();
-    
+
     for test in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
         let this_contents = contents.replace(test, "");
         let this_contents = this_contents.replace(test.to_ascii_lowercase(), "");
 
-        let react_len = react(this_contents);
-        
+        let react_len = react(this_contents).len();
+
         if react_len < best_len {
             println!("{}, {}", test, react_len);
             best_len = react_len;
@@ -41,9 +41,9 @@ fn best_react(contents: String) -> usize {
     best_len
 }
 
-fn react(mut result: String) -> usize {
+fn react(mut result: String) -> String {
     result = result.trim_end().to_string();
-    
+
     loop {
         let mut i = 0;
         {
@@ -52,11 +52,12 @@ fn react(mut result: String) -> usize {
                 let mut skip = false;
                 match iter.peek() {
                     Some(c2) => {
-                        if (c1.to_ascii_lowercase() == c2.to_ascii_lowercase()) && 
-                            ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase()) ||
-                             (c1.is_ascii_lowercase() && c2.is_ascii_uppercase())) {
-                                skip = true;
-                            }
+                        if (c1.to_ascii_lowercase() == c2.to_ascii_lowercase())
+                            && ((c1.is_ascii_uppercase() && c2.is_ascii_lowercase())
+                                || (c1.is_ascii_lowercase() && c2.is_ascii_uppercase()))
+                        {
+                            skip = true;
+                        }
                     }
                     None => (),
                 }
@@ -73,7 +74,7 @@ fn react(mut result: String) -> usize {
         result.remove(i);
         result.remove(i);
     }
-    result.len()
+    result
 }
 
 #[cfg(test)]
@@ -83,7 +84,7 @@ mod tests {
     #[test]
     fn part1_example() {
         let contents = get_contents("test");
-        assert!(react(contents.clone()) == 10);
+        assert!(react(contents.clone()).len() == 10);
     }
 
     #[test]
@@ -92,5 +93,3 @@ mod tests {
         assert!(best_react(contents.clone()) == 4);
     }
 }
-
-    
