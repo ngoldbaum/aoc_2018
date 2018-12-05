@@ -1,3 +1,7 @@
+extern crate rayon;
+
+use rayon::prelude::*;
+
 use std::env;
 use std::fs::File;
 use std::io::prelude::*;
@@ -24,21 +28,13 @@ fn get_contents(filename: &str) -> String {
 }
 
 fn best_react(contents: String) -> usize {
-    let mut best_len = contents.len();
-
-    for test in "ABCDEFGHIJKLMNOPQRSTUVWXYZ".chars() {
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ".par_chars().map(|test| {
         let this_contents = contents.replace(test, "");
-        let this_contents = this_contents.replace(test.to_ascii_lowercase(), "");
+        let this_contents = this_contents
+            .replace(test.to_ascii_lowercase(), "");
 
-        let react_len = react(this_contents).len();
-
-        if react_len < best_len {
-            println!("{}, {}", test, react_len);
-            best_len = react_len;
-        }
-    }
-
-    best_len
+        react(this_contents).len()
+    } ).min().unwrap()
 }
 
 fn react(mut result: String) -> String {
