@@ -37,7 +37,6 @@ fn best_react(contents: String) -> usize {
         .map(|test| {
             let this_contents = contents.replace(test, "");
             let this_contents = this_contents.replace(test.to_ascii_lowercase(), "");
-            println!("{:#?}", std::thread::current().id());
             react(this_contents).len()
         }).min()
         .unwrap()
