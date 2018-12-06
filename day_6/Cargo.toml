@@ -2,6 +2,7 @@
 name = "day_6"
 version = "0.1.0"
 authors = ["Nathan Goldbaum <ngoldbau@illinois.edu>"]
+edition= '2018'
 
 [dependencies]
 ndarray = "0.12.1"
