@@ -15,13 +15,36 @@ fn main() -> Result<(), <Point as FromStr>::Err> {
 
     let filename = &args[1];
 
+    let maxdist = args[2].parse::<i64>().unwrap();
+
     let contents = get_contents(filename);
 
     let points = get_points(&contents)?;
 
     println!("{}", largest_area(&points));
+    println!("{}", close_area(&points, maxdist));
 
     Ok(())
+}
+
+fn close_area(points: &[Point], maxdist: i64) -> u64 {
+    let size = get_max(points) + 1;
+
+    let mut arena = Array::<i64, Ix2>::zeros((size, size));
+
+    for i in 0..size {
+        for j in 0..size {
+            let mut dists: Vec<i64> = vec![0; points.len()];
+            for (c, p) in points.iter().enumerate() {
+                dists[c] = (p.x - i as i64).abs() + (p.y - j as i64).abs();
+            }
+            if dists.iter().sum::<i64>() >= maxdist {
+                continue;
+            }
+            arena[[j, i]] = 1;
+        }
+    }
+    arena.sum() as u64
 }
 
 fn largest_area(points: &[Point]) -> u64 {
@@ -139,6 +162,14 @@ mod tests {
         let contents = get_contents("test");
         let points = get_points(&contents)?;
         assert!(largest_area(&points) == 17);
+        Ok(())
+    }
+
+    #[test]
+    fn part2() -> Result<(), <Point as FromStr>::Err> {
+        let contents = get_contents("test");
+        let points = get_points(&contents)?;
+        assert!(close_area(&points, 32) == 16);
         Ok(())
     }
 }
