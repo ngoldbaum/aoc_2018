@@ -5,3 +5,5 @@ authors = ["Nathan Goldbaum <ngoldbau@illinois.edu>"]
 edition = "2018"
 
 [dependencies]
+petgraph = "0.4"
+daggy = "0.6"
