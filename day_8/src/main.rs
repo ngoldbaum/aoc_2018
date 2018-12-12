@@ -2,7 +2,7 @@ use std::env;
 use std::error;
 use std::fs::File;
 use std::io::prelude::*;
-use std::str::FromStr;
+use std::str::Split;
 
 type Result<T> = std::result::Result<T, Box<error::Error>>;
 
@@ -12,50 +12,65 @@ fn main() -> Result<()> {
     let filename = &args[1];
 
     let contents = get_contents(filename)?;
+    let mut split = contents.split(" ");
 
-    let tree: TreeGraph = contents.parse()?;
+    let tree: TreeGraph = parse_node(&mut split)?;
+
+    let total_metadata: usize = metadata_total(&tree);
+
+    println!("{}", total_metadata);
 
     Ok(())
 }
 
+#[derive(Debug)]
 struct TreeGraph {
     // children
     children: Vec<Box<TreeGraph>>,
-    metadata: Vec<i64>,
+    metadata: Vec<usize>,
 }
 
-impl FromStr for TreeGraph {
-    type Err = Box<error::Error>;
+fn metadata_total(tree: &TreeGraph) -> usize {
+    let mut res: usize = 0;
 
-    fn from_str(s: &str) -> Result<Self> {
-        let mut children_fromstr: Vec<Box<TreeGraph>> = Vec::new();
-        let mut metadata_fromstr: Vec<i64> = Vec::new();
-
-        let mut chars = s.split(' ');
-
-        let nchildren = match chars.next() {
-            Some(x) => x.parse::<i64>()?,
-            None => 0,
-        };
-
-        let nmetadata = match chars.next() {
-            Some(x) => x.parse::<i64>()?,
-            None => 0,
-        };
-
-        if nchildren > 0 {
-            children_fromstr.append(get_children(s[2..]));
-        }
-
-        for _ in 0..nmetadata {
-            metadata_fromstr.push(chars.next().unwrap().parse::<i64>()?);
-        }
-
-        Ok(TreeGraph {
-            children: children_fromstr,
-            metadata: metadata_fromstr,
-        })
+    for m in (*tree).metadata.iter() {
+        res += m;
     }
+
+    for child in (*tree).children.iter() {
+        res += metadata_total(&**child);
+    }
+
+    res
+}
+
+fn parse_node(s: &mut Split<&str>) -> Result<TreeGraph> {
+    let mut children_fromstr: Vec<Box<TreeGraph>> = Vec::new();
+    let mut metadata_fromstr: Vec<usize> = Vec::new();
+
+    let nchildren = match s.next() {
+        Some(x) => x.to_string().parse::<usize>()?,
+        None => 0,
+    };
+
+    let nmetadata = match s.next() {
+        Some(x) => x.to_string().parse::<usize>()?,
+        None => 0,
+    };
+
+    for _ in 0..nchildren {
+        let g: TreeGraph = parse_node(s)?;
+        children_fromstr.push(Box::new(g));
+    }
+
+    for _ in 0..nmetadata {
+        metadata_fromstr.push(s.next().unwrap().to_string().parse::<usize>()?);
+    }
+
+    Ok(TreeGraph {
+        children: children_fromstr,
+        metadata: metadata_fromstr,
+    })
 }
 
 fn get_contents(filename: &str) -> Result<String> {
