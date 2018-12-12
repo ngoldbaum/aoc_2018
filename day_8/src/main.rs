@@ -24,7 +24,7 @@ fn main() -> Result<()> {
 
 #[derive(Debug)]
 struct TreeGraph {
-    children: Vec<Box<TreeGraph>>,
+    children: Vec<TreeGraph>,
     metadata: Vec<usize>,
 }
 
@@ -36,7 +36,7 @@ fn metadata_total(tree: &TreeGraph) -> usize {
     }
 
     for child in (*tree).children.iter() {
-        res += metadata_total(&**child);
+        res += metadata_total(&*child);
     }
 
     res
@@ -52,9 +52,9 @@ fn value(tree: &TreeGraph) -> usize {
             if *m - 1 >= nchildren {
                 continue;
             }
-            let children: &[Box<TreeGraph>] = &tree.children;
-            let child: &Box<TreeGraph> = children.iter().nth(*m - 1).unwrap();
-            let unboxed_child: &TreeGraph = &**child;
+            let children: &[TreeGraph] = &tree.children;
+            let child: &TreeGraph = children.iter().nth(*m - 1).unwrap();
+            let unboxed_child: &TreeGraph = &*child;
             res += value(unboxed_child);
         }
     }
@@ -62,7 +62,7 @@ fn value(tree: &TreeGraph) -> usize {
 }
 
 fn parse_node(s: &mut Split<&str>) -> Result<TreeGraph> {
-    let mut children_fromstr: Vec<Box<TreeGraph>> = Vec::new();
+    let mut children_fromstr: Vec<TreeGraph> = Vec::new();
     let mut metadata_fromstr: Vec<usize> = Vec::new();
 
     let nchildren = match s.next() {
@@ -77,7 +77,7 @@ fn parse_node(s: &mut Split<&str>) -> Result<TreeGraph> {
 
     for _ in 0..nchildren {
         let g: TreeGraph = parse_node(s)?;
-        children_fromstr.push(Box::new(g));
+        children_fromstr.push(g);
     }
 
     for _ in 0..nmetadata {
