@@ -16,16 +16,14 @@ fn main() -> Result<()> {
 
     let tree: TreeGraph = parse_node(&mut split)?;
 
-    let total_metadata: usize = metadata_total(&tree);
-
-    println!("{}", total_metadata);
+    println!("{}", metadata_total(&tree));
+    println!("{}", value(&tree));
 
     Ok(())
 }
 
 #[derive(Debug)]
 struct TreeGraph {
-    // children
     children: Vec<Box<TreeGraph>>,
     metadata: Vec<usize>,
 }
@@ -41,6 +39,25 @@ fn metadata_total(tree: &TreeGraph) -> usize {
         res += metadata_total(&**child);
     }
 
+    res
+}
+
+fn value(tree: &TreeGraph) -> usize {
+    let nchildren = tree.children.len();
+    let mut res: usize = 0;
+    if nchildren == 0 {
+        res = tree.metadata.iter().sum();
+    } else {
+        for m in tree.metadata.iter() {
+            if *m - 1 >= nchildren {
+                continue;
+            }
+            let children: &[Box<TreeGraph>] = &tree.children;
+            let child: &Box<TreeGraph> = children.iter().nth(*m - 1).unwrap();
+            let unboxed_child: &TreeGraph = &**child;
+            res += value(unboxed_child);
+        }
+    }
     res
 }
 
